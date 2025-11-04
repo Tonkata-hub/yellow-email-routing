@@ -1,0 +1,21 @@
+{
+	"compilerOptions": {
+		"module": "nodenext",
+		"target": "ES2020",
+		"moduleResolution": "nodenext",
+		"types": ["node"],
+		"strict": true,
+		"skipLibCheck": true,
+		"isolatedModules": true,
+		"verbatimModuleSyntax": true,
+		"sourceMap": true
+
+		// optional:
+		// "rootDir": "src",
+		// "outDir": "dist",
+		// "resolveJsonModule": true,
+		// "declaration": false,
+		// "declarationMap": false
+	},
+	"include": ["src"]
+}

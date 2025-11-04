@@ -1,0 +1,25 @@
+{
+	"name": "yellow-email-routing",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "tsx src/index.ts build",
+		"classify": "tsx src/index.ts classify",
+		"start": "npm run classify"
+	},
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"type": "module",
+	"dependencies": {
+		"cosine-similarity": "^1.0.1",
+		"dotenv": "^17.2.3",
+		"openai": "^6.8.0"
+	},
+	"devDependencies": {
+		"@types/node": "^24.10.0",
+		"tsx": "^4.20.6",
+		"typescript": "^5.9.3"
+	}
+}

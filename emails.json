@@ -1,0 +1,17 @@
+[
+	{ "text": "Subject: Invoice for October\nBody: Attached is the invoice and VAT details.", "label": "billing" },
+	{ "text": "Subject: Refund processed\nBody: Your refund was issued today to your card.", "label": "billing" },
+	{ "text": "Subject: Payment receipt\nBody: Here is your receipt for the recent order.", "label": "billing" },
+
+	{ "text": "Subject: Password reset\nBody: I can’t log in, please help reset.", "label": "support" },
+	{ "text": "Subject: App crash\nBody: The app crashes when I upload a file.", "label": "support" },
+	{ "text": "Subject: Account locked\nBody: My account was locked after failed attempts.", "label": "support" },
+
+	{ "text": "Subject: Pricing question\nBody: Do you offer discounts for nonprofits?", "label": "sales" },
+	{ "text": "Subject: Partnership\nBody: We’d like to discuss sponsorship options.", "label": "sales" },
+	{ "text": "Subject: Quote request\nBody: Please send a quote for 200 seats.", "label": "sales" },
+
+	{ "text": "Subject: Newsletter\nBody: October updates and company news.", "label": "general" },
+	{ "text": "Subject: Job application\nBody: CV attached for the frontend role.", "label": "general" },
+	{ "text": "Subject: Event invite\nBody: Join our webinar next week.", "label": "general" }
+]
