@@ -6,7 +6,8 @@
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "tsx src/index.ts build",
 		"classify": "tsx src/index.ts classify",
-		"start": "npm run classify"
+		"start": "npm run classify",
+		"serve": "tsx src/server.ts"
 	},
 	"author": "",
 	"license": "ISC",
