@@ -1,344 +1,218 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Email Routing Demo</title>
-	<style>
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Email Router - Sort Your Emails!</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<style>
+			@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap");
 
-		body {
-			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-			min-height: 100vh;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			padding: 20px;
-		}
-
-		.container {
-			background: white;
-			border-radius: 20px;
-			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-			max-width: 800px;
-			width: 100%;
-			padding: 40px;
-		}
-
-		h1 {
-			color: #333;
-			margin-bottom: 10px;
-			font-size: 2em;
-		}
-
-		.subtitle {
-			color: #666;
-			margin-bottom: 30px;
-			font-size: 0.95em;
-		}
-
-		input[type="text"],
-		textarea {
-			width: 100%;
-			padding: 15px;
-			border: 2px solid #e0e0e0;
-			border-radius: 10px;
-			font-size: 14px;
-			font-family: inherit;
-			transition: border-color 0.3s;
-		}
-
-		input[type="text"] {
-			margin-bottom: 15px;
-		}
-
-		textarea {
-			min-height: 200px;
-			resize: vertical;
-		}
-
-		input[type="text"]:focus,
-		textarea:focus {
-			outline: none;
-			border-color: #667eea;
-		}
-
-		label {
-			display: block;
-			font-weight: 600;
-			color: #333;
-			margin-bottom: 8px;
-			font-size: 14px;
-		}
-
-		button {
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-			color: white;
-			border: none;
-			padding: 15px 40px;
-			border-radius: 10px;
-			font-size: 16px;
-			font-weight: 600;
-			cursor: pointer;
-			margin-top: 20px;
-			transition: transform 0.2s, box-shadow 0.2s;
-			width: 100%;
-		}
-
-		button:hover {
-			transform: translateY(-2px);
-			box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-		}
-
-		button:active {
-			transform: translateY(0);
-		}
-
-		button:disabled {
-			opacity: 0.6;
-			cursor: not-allowed;
-			transform: none;
-		}
-
-		.result {
-			margin-top: 30px;
-			padding: 25px;
-			background: #f8f9fa;
-			border-radius: 10px;
-			display: none;
-		}
-
-		.result.show {
-			display: block;
-			animation: fadeIn 0.3s;
-		}
-
-		@keyframes fadeIn {
-			from { opacity: 0; transform: translateY(-10px); }
-			to { opacity: 1; transform: translateY(0); }
-		}
-
-		.routed-label {
-			font-size: 1.5em;
-			font-weight: 700;
-			margin-bottom: 15px;
-			display: flex;
-			align-items: center;
-			gap: 10px;
-		}
-
-		.badge {
-			display: inline-block;
-			padding: 8px 16px;
-			border-radius: 20px;
-			font-size: 0.9em;
-			font-weight: 600;
-			text-transform: uppercase;
-			letter-spacing: 0.5px;
-		}
-
-		.badge.billing { background: #ff6b6b; color: white; }
-		.badge.support { background: #4ecdc4; color: white; }
-		.badge.sales { background: #45b7d1; color: white; }
-		.badge.general { background: #96ceb4; color: white; }
-		.badge.unclassified { background: #95a5a6; color: white; }
-
-		.score {
-			font-size: 1.2em;
-			color: #666;
-			margin-bottom: 20px;
-		}
-
-		.similarities {
-			margin-top: 20px;
-		}
-
-		.similarities h3 {
-			font-size: 1em;
-			color: #333;
-			margin-bottom: 15px;
-		}
-
-		.similarity-item {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding: 10px 15px;
-			background: white;
-			border-radius: 8px;
-			margin-bottom: 8px;
-			transition: transform 0.2s;
-		}
-
-		.similarity-item:hover {
-			transform: translateX(5px);
-		}
-
-		.similarity-label {
-			font-weight: 600;
-			color: #333;
-		}
-
-		.similarity-score {
-			color: #667eea;
-			font-weight: 600;
-		}
-
-		.loading {
-			display: none;
-			text-align: center;
-			margin-top: 20px;
-			color: #667eea;
-		}
-
-		.loading.show {
-			display: block;
-		}
-
-		.spinner {
-			border: 3px solid #f3f3f3;
-			border-top: 3px solid #667eea;
-			border-radius: 50%;
-			width: 30px;
-			height: 30px;
-			animation: spin 1s linear infinite;
-			margin: 0 auto 10px;
-		}
-
-		@keyframes spin {
-			0% { transform: rotate(0deg); }
-			100% { transform: rotate(360deg); }
-		}
-
-		.error {
-			background: #fee;
-			color: #c33;
-			padding: 15px;
-			border-radius: 8px;
-			margin-top: 20px;
-			display: none;
-		}
-
-		.error.show {
-			display: block;
-		}
-	</style>
-</head>
-<body>
-	<div class="container">
-		<h1>📧 Email Routing</h1>
-		<p class="subtitle">AI-powered email classification demo</p>
-		
-		<label for="subjectInput">Subject:</label>
-		<input type="text" id="subjectInput" placeholder="e.g., Invoice for October">
-		
-		<label for="bodyInput">Body:</label>
-		<textarea id="bodyInput" placeholder="e.g., Attached is the invoice and VAT details."></textarea>
-		
-		<button id="classifyBtn" onclick="classifyEmail()">Classify Email</button>
-		
-		<div class="loading" id="loading">
-			<div class="spinner"></div>
-			Analyzing email...
-		</div>
-		
-		<div class="error" id="error"></div>
-		
-		<div class="result" id="result">
-			<div class="routed-label">
-				Routed to: <span class="badge" id="routedBadge"></span>
-			</div>
-			<div class="score" id="score"></div>
-			
-			<div class="similarities">
-				<h3>Similarity Scores:</h3>
-				<div id="similaritiesList"></div>
-			</div>
-		</div>
-	</div>
-
-	<script>
-		async function classifyEmail() {
-			const subject = document.getElementById('subjectInput').value.trim();
-			const body = document.getElementById('bodyInput').value.trim();
-			const btn = document.getElementById('classifyBtn');
-			const loading = document.getElementById('loading');
-			const result = document.getElementById('result');
-			const error = document.getElementById('error');
-
-			if (!subject && !body) {
-				error.textContent = 'Please enter at least a subject or body.';
-				error.classList.add('show');
-				return;
+			body {
+				font-family: "Outfit", sans-serif;
 			}
 
-			// Format as "Subject: ...\nBody: ..." to match training data format
-			const text = `Subject: ${subject || '(no subject)'}\nBody: ${body || '(no body)'}`;
+			.bounce {
+				animation: bounce 0.5s ease;
+			}
 
-			btn.disabled = true;
-			loading.classList.add('show');
-			result.classList.remove('show');
-			error.classList.remove('show');
+			@keyframes bounce {
+				0%,
+				100% {
+					transform: translateY(0);
+				}
+				50% {
+					transform: translateY(-10px);
+				}
+			}
 
-			try {
-				const response = await fetch('/api/classify', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ text })
-				});
+			.fade-in {
+				animation: fadeIn 0.4s ease;
+			}
 
-				const data = await response.json();
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+					transform: translateY(10px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+		</style>
+	</head>
+	<body class="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100">
+		<div class="container mx-auto px-4 py-8 max-w-2xl">
+			<!-- Header -->
+			<div class="text-center mb-8">
+				<h1
+					class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 mb-2"
+				>
+					Email Router
+				</h1>
+				<p class="text-lg text-gray-700">Let's sort your emails with AI magic!</p>
+			</div>
 
-				if (!response.ok) {
-					throw new Error(data.error || 'Classification failed');
+			<!-- Main Card -->
+			<div class="bg-white rounded-3xl shadow-2xl p-8 mb-6">
+				<!-- Input Form -->
+				<div class="space-y-4 mb-6">
+					<div>
+						<label class="block text-sm font-semibold text-gray-700 mb-2">Subject Line</label>
+						<input
+							type="text"
+							id="subjectInput"
+							placeholder="What's this email about?"
+							class="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 focus:border-pink-400 focus:outline-none transition-colors"
+						/>
+					</div>
+
+					<div>
+						<label class="block text-sm font-semibold text-gray-700 mb-2">Email Body</label>
+						<textarea
+							id="bodyInput"
+							rows="4"
+							placeholder="Type or paste the email content here..."
+							class="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 focus:border-purple-400 focus:outline-none transition-colors resize-none"
+						></textarea>
+					</div>
+				</div>
+
+				<!-- Classify Button -->
+				<button
+					id="classifyBtn"
+					onclick="classifyEmail()"
+					class="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white font-bold py-4 rounded-2xl hover:shadow-lg transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+				>
+					<span id="btnText">Classify Email</span>
+				</button>
+
+				<!-- Added loading state -->
+				<div id="loading" class="hidden text-center mt-4">
+					<div
+						class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-purple-500 border-t-transparent"
+					></div>
+					<p class="text-purple-600 font-semibold mt-2">Thinking...</p>
+				</div>
+
+				<!-- Added error display -->
+				<div
+					id="error"
+					class="hidden mt-4 bg-red-100 border-2 border-red-300 text-red-700 px-4 py-3 rounded-2xl"
+				></div>
+			</div>
+
+			<!-- Results Card -->
+			<div id="result" class="hidden bg-white rounded-3xl shadow-2xl p-8 fade-in">
+				<!-- Main Result -->
+				<div class="text-center mb-6 pb-6 border-b-2 border-gray-100">
+					<div
+						class="inline-block bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white px-6 py-3 rounded-full font-bold text-lg mb-2 bounce"
+					>
+						<span id="routedBadge"></span>
+					</div>
+					<p id="score" class="text-gray-600 text-sm mt-2"></p>
+				</div>
+
+				<!-- Similarity Scores -->
+				<div class="space-y-3">
+					<h3 class="font-bold text-gray-700 mb-3">How it scored:</h3>
+					<div id="similaritiesList" class="space-y-2"></div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			async function classifyEmail() {
+				const subject = document.getElementById("subjectInput").value.trim();
+				const body = document.getElementById("bodyInput").value.trim();
+				const btn = document.getElementById("classifyBtn");
+				const loading = document.getElementById("loading");
+				const result = document.getElementById("result");
+				const error = document.getElementById("error");
+
+				if (!subject && !body) {
+					error.textContent = "Please enter at least a subject or body!";
+					error.classList.remove("hidden");
+					return;
 				}
 
-				// Update UI
-				const routedBadge = document.getElementById('routedBadge');
-				routedBadge.textContent = data.routed;
-				routedBadge.className = 'badge ' + data.routed;
+				// Format as "Subject: ...\nBody: ..." to match training data format
+				const text = `Subject: ${subject || "(no subject)"}\nBody: ${body || "(no body)"}`;
 
-				document.getElementById('score').textContent = 
-					`Confidence: ${(data.bestScore * 100).toFixed(1)}% (${data.bestLabel})`;
+				btn.disabled = true;
+				loading.classList.remove("hidden");
+				result.classList.add("hidden");
+				error.classList.add("hidden");
 
-				const similaritiesList = document.getElementById('similaritiesList');
-				similaritiesList.innerHTML = '';
-				
-				Object.entries(data.similarities)
-					.sort((a, b) => b[1] - a[1])
-					.forEach(([label, score]) => {
-						const item = document.createElement('div');
-						item.className = 'similarity-item';
-						item.innerHTML = `
-							<span class="similarity-label">${label}</span>
-							<span class="similarity-score">${(score * 100).toFixed(1)}%</span>
-						`;
-						similaritiesList.appendChild(item);
+				try {
+					const response = await fetch("/api/classify", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ text }),
 					});
 
-				result.classList.add('show');
-			} catch (err) {
-				error.textContent = err.message || 'An error occurred';
-				error.classList.add('show');
-			} finally {
-				btn.disabled = false;
-				loading.classList.remove('show');
-			}
-		}
+					const data = await response.json();
 
-		// Allow Enter key to submit (Ctrl+Enter in body textarea)
-		document.getElementById('bodyInput').addEventListener('keydown', (e) => {
-			if (e.ctrlKey && e.key === 'Enter') {
-				classifyEmail();
+					if (!response.ok) {
+						throw new Error(data.error || "Classification failed");
+					}
+
+					// Update UI with playful styling
+					const routedBadge = document.getElementById("routedBadge");
+					routedBadge.textContent = data.routed.toUpperCase();
+
+					document.getElementById("score").textContent = `Confidence: ${(data.bestScore * 100).toFixed(
+						1
+					)}% (${data.bestLabel})`;
+
+					// Create similarity bars with gradients
+					const similaritiesList = document.getElementById("similaritiesList");
+					similaritiesList.innerHTML = "";
+
+					const colors = {
+						billing: "from-pink-400 to-pink-600",
+						support: "from-purple-400 to-purple-600",
+						sales: "from-blue-400 to-blue-600",
+						general: "from-gray-400 to-gray-600",
+					};
+
+					Object.entries(data.similarities)
+						.sort((a, b) => b[1] - a[1])
+						.forEach(([label, score]) => {
+							const percentage = (score * 100).toFixed(1);
+							const item = document.createElement("div");
+							item.className = "flex items-center gap-3";
+							item.innerHTML = `
+                            <div class="w-24 text-sm font-semibold text-gray-700 capitalize">${label}</div>
+                            <div class="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
+                                <div class="bg-gradient-to-r ${
+									colors[label] || "from-gray-400 to-gray-600"
+								} h-full rounded-full transition-all duration-500" style="width: ${percentage}%"></div>
+                            </div>
+                            <div class="w-12 text-sm font-semibold text-gray-700 text-right">${percentage}%</div>
+                        `;
+							similaritiesList.appendChild(item);
+						});
+
+					result.classList.remove("hidden");
+					result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+				} catch (err) {
+					error.textContent = err.message || "Oops! Something went wrong. Try again?";
+					error.classList.remove("hidden");
+				} finally {
+					btn.disabled = false;
+					loading.classList.add("hidden");
+				}
 			}
-		});
-	</script>
-</body>
+
+			// Allow Ctrl+Enter to submit from textarea
+			document.getElementById("bodyInput").addEventListener("keydown", (e) => {
+				if (e.ctrlKey && e.key === "Enter") {
+					classifyEmail();
+				}
+			});
+		</script>
+	</body>
 </html>
-
-
