@@ -23,6 +23,7 @@ function cosine(a: number[], b: number[]): number {
 }
 
 async function embedTexts(texts: string[]): Promise<number[][]> {
+	console.log("📤 Sending embedding request:", { model: MODEL, input: texts });
 	const res = await client.embeddings.create({ model: MODEL, input: texts });
 	return res.data.map((d) => normalize(d.embedding as number[]));
 }
